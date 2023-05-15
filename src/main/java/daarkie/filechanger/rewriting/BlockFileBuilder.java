@@ -51,8 +51,8 @@ public class BlockFileBuilder implements FileBuilder {
             Pattern blockPattern = Pattern.compile(blockString);
             Matcher blockMatcher = blockPattern.matcher(iFolder.getName());
             String blockBlacklist = blockProp.getProperty("breakable_blocks_blacklist" + i);
-            boolean notOnBlackList = blockBlacklist != null;
-            if (notOnBlackList) {
+            boolean notOnBlackList = blockBlacklist.isEmpty();
+            if (!notOnBlackList) {
                 String blockBlacklistPatterString = blockBlacklist.replace(",","|");
                 Pattern blockBlacklistPattern = Pattern.compile(blockBlacklistPatterString);
                 Matcher blockBlacklistMatcher = blockBlacklistPattern.matcher(iFolder.getName());
