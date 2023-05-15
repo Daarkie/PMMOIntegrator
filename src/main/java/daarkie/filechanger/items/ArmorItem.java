@@ -84,7 +84,7 @@ public class ArmorItem implements IItem {
                 break;
             }
         }
-        if (!holdBonusMap.isEmpty()) finalBonus.put("HELD", holdBonusMap);
+        if (!holdBonusMap.isEmpty()) finalBonus.put("WORN", holdBonusMap);
         return finalBonus;
     }
 
