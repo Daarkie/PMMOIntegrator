@@ -2,11 +2,11 @@ package main.java.daarkie.filechanger.rewriting;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import main.java.daarkie.filechanger.registry.JSONableBlock;
+import main.java.daarkie.filechanger.registry.JSONableItem;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,9 +26,8 @@ public class BlockFileBuilder implements FileBuilder {
             return;
         }
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        try (PrintWriter writer = new PrintWriter(iFolder))
-        {
-            writer.print(gson.toJson(sorted));
+        try (PrintWriter writer = new PrintWriter(iFolder)) {
+            writer.print(gson.toJson(new JSONableBlock(sorted.get("vein_data"), sorted.get("xp_values"))));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }

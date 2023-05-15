@@ -3,6 +3,7 @@ package main.java.daarkie.filechanger.rewriting;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import main.java.daarkie.filechanger.items.*;
+import main.java.daarkie.filechanger.registry.JSONableItem;
 import main.java.daarkie.filechanger.registry.SalvagePart;
 
 import java.io.*;
@@ -34,14 +35,26 @@ public class ItemFileBuilder implements FileBuilder {
         }
         Map<String, SalvagePart> salvagePart = getSalvageInfo();
         Map<String, Map<String, ?>> sorted = sortItem();
-        if (sorted == null && salvagePart == null) {
-            return;
-        }
-        Map<String, Map<String, ?>> toWrite = sorted == null ? new HashMap<>() : new HashMap<>(sorted);
-        if (salvagePart != null) toWrite.put("salvage", salvagePart);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        if (salvagePart == null && sorted == null) return;
+        if (salvagePart == null) {
+            try (PrintWriter writer = new PrintWriter(iFolder)) {
+                writer.print(gson.toJson(new JSONableItem(sorted.get("requirements"),sorted.get("negative_effect"), sorted.get("xp_values"), sorted.get("bonuses"))));
+                return;
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (sorted == null) {
+            try (PrintWriter writer = new PrintWriter(iFolder)) {
+                writer.print(gson.toJson(new JSONableItem(salvagePart)));
+                return;
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
         try (PrintWriter writer = new PrintWriter(iFolder)) {
-            writer.print(gson.toJson(toWrite));
+            writer.print(gson.toJson(new JSONableItem(sorted.get("requirements"),sorted.get("negative_effect"), sorted.get("xp_values"), sorted.get("bonuses"), salvagePart)));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
